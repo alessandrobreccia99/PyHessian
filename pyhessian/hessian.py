@@ -62,7 +62,7 @@ class hessian():
         if not self.full_dataset:
             self.inputs, self.targets = self.data
             if self.device == 'mps':
-                self.inputs, self.targets = self.inputs.device('mps'), self.targets.device('mps')
+                self.inputs, self.targets = self.inputs.to('mps'), self.targets.to('mps')
 
             # if we only compute the Hessian information for a single batch data, we can re-use the gradients.
             outputs = self.model(self.inputs)
