@@ -34,7 +34,7 @@ class hessian():
         iii) the estimated eigenvalue density
     """
 
-    def __init__(self, model, criterion, data=None, dataloader=None, cuda=True):
+    def __init__(self, model, criterion, data=None, dataloader=None, device='mps'):
         """
         model: the model that needs Hessain information
         criterion: the loss function
@@ -55,18 +55,14 @@ class hessian():
         else:
             self.data = dataloader
             self.full_dataset = True
-
-        if cuda:
-            self.device = 'cuda'
-        else:
-            self.device = 'cpu'
+            
+        self.device = device
 
         # pre-processing for single batch case to simplify the computation.
         if not self.full_dataset:
             self.inputs, self.targets = self.data
-            if self.device == 'cuda':
-                self.inputs, self.targets = self.inputs.cuda(
-                ), self.targets.cuda()
+            if self.device == 'mps':
+                self.inputs, self.targets = self.inputs.device('mps'), self.targets.device('mps')
 
             # if we only compute the Hessian information for a single batch data, we can re-use the gradients.
             outputs = self.model(self.inputs)
